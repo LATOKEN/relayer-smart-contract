@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
-	"github.com/LATOKEN/relayer-smart-contract.git/src/service/storage"
 
 	"github.com/spf13/viper"
 )
@@ -17,7 +16,6 @@ type Config interface {
 	ReadWorkersConfig() []*models.WorkerConfig
 	ReadLachainConfig() *models.WorkerConfig
 	ReadDBConfig() *models.StorageConfig
-	ReadResourceIDs() []*storage.ResourceId
 	ReadChains() []string
 	GetString(key string) string
 	GetStringMap(key string) map[string]string

@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
-	"github.com/LATOKEN/relayer-smart-contract.git/src/service/storage"
 
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -66,18 +65,6 @@ func (v *viperConfig) ReadDBConfig() *models.StorageConfig {
 		DBUser:     v.GetString("storage.user"),
 		DBPassword: v.GetString("storage.password"),
 	}
-}
-
-func (v *viperConfig) ReadResourceIDs() []*storage.ResourceId {
-	tokens := v.GetStringSlice("all_tokens")
-	resouceIDs := make([]*storage.ResourceId, len(tokens))
-	for index, name := range tokens {
-		resouceIDs[index] = &storage.ResourceId{
-			Name: name,
-			ID:   v.GetString(fmt.Sprintf("resourceIDs.%s", name)),
-		}
-	}
-	return resouceIDs
 }
 
 func (v *viperConfig) ReadChains() []string {
