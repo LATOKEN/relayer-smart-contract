@@ -7,7 +7,6 @@ import (
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
 	rlr "github.com/LATOKEN/relayer-smart-contract.git/src/service"
-	"github.com/LATOKEN/relayer-smart-contract.git/src/service/storage"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -25,7 +24,7 @@ type App struct {
 
 // NewApp is initializes the app
 func NewApp(logger *logrus.Logger, addr string, db *gorm.DB,
-	laCfg *models.WorkerConfig, chainCfgs []*models.WorkerConfig, tokenChecks []*storage.TokenCheck) *App {
+	laCfg *models.WorkerConfig, chainCfgs []*models.WorkerConfig, tokenChecks []interface{}) *App {
 	// create new app
 	inst := &App{
 		logger:  logger,

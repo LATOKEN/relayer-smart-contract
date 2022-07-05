@@ -27,7 +27,7 @@ type RelayerSRV struct {
 
 // CreateNewRelayerSRV ...
 func CreateNewRelayerSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig *models.WorkerConfig,
-	chainCfgs []*models.WorkerConfig, tokenChecks []*storage.TokenCheck) *RelayerSRV {
+	chainCfgs []*models.WorkerConfig, tokenChecks []interface{}) *RelayerSRV {
 	// init database
 	db, err := storage.InitStorage(gormDB)
 	if err != nil {

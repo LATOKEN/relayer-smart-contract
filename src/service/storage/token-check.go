@@ -1,8 +1,15 @@
 package storage
 
-func (d *DataBase) SaveTokenChecks(checks []*TokenCheck) {
+func (d *DataBase) SaveTokenChecks(checks []interface{}) {
 	for _, rID := range checks {
-		if err := d.saveTokenCheck(rID); err != nil {
+		checkMap := rID.(map[string]interface{})
+		check := TokenCheck{
+			OriginChainID:      checkMap["origin_chain_id"].(string),
+			DestinationChainID: checkMap["destination_chain_id"].(string),
+			ResourceID:         checkMap["resource_id"].(string),
+			Amount:             int64(checkMap["amount"].(float64)),
+		}
+		if err := d.saveTokenCheck(&check); err != nil {
 			continue
 		}
 	}

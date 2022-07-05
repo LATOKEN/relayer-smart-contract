@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
-	"github.com/LATOKEN/relayer-smart-contract.git/src/service/storage"
 
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -54,9 +53,9 @@ func (v *viperConfig) readWorkerConfig(name string) *models.WorkerConfig {
 	}
 }
 
-func (v *viperConfig) ReadTokenChecks() (checks []*storage.TokenCheck) {
+func (v *viperConfig) ReadTokenChecks() (checks []interface{}) {
 	allChecks := v.GetInterface("token_checks")
-	checks = allChecks.([]*storage.TokenCheck)
+	checks = allChecks.([]interface{})
 	return checks
 }
 
