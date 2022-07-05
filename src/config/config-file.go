@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
+	"github.com/LATOKEN/relayer-smart-contract.git/src/service/storage"
 
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -51,6 +52,12 @@ func (v *viperConfig) readWorkerConfig(name string) *models.WorkerConfig {
 		StartBlockHeight:   v.GetInt64(fmt.Sprintf("workers.%s.start_block_height", name)),
 		DestinationChainID: v.GetString(fmt.Sprintf("workers.%s.dest_id", name)),
 	}
+}
+
+func (v *viperConfig) ReadTokenChecks() (checks []*storage.TokenCheck) {
+	allChecks := v.GetInterface("token_checks")
+	checks = allChecks.([]*storage.TokenCheck)
+	return checks
 }
 
 // Reads storage params from config.json
