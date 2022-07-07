@@ -63,13 +63,12 @@ func (r *RelayerSRV) Run() {
 	// start watcher
 	r.Watcher.Run()
 	go r.emitChainSendClaim()
-	go r.emitChainSendPass()
-	go r.emitChainSendSpend()
-	go r.emitChainSendExpire()
 	// run Worker workers
 	for _, worker := range r.Workers {
 		go r.ConfirmWorkerTx(worker)
-		// go r.CheckTxSentRoutine(worker)
+		if worker.GetChainName() == "LA" {
+			go r.CheckTxSentRoutine(worker)
+		}
 	}
 }
 
@@ -131,11 +130,6 @@ func (r *RelayerSRV) ConfirmWorkerTx(worker workers.IWorker) {
 				if txLog.DestinationChainID == r.laWorker.GetDestinationID() {
 					swapType = storage.SwapTypeBind
 				}
-				// reject swap request if receiver addr and worker chain addr both are r addr
-				// if worker.IsSameAddress(txLog.ReceiverAddr, worker.GetWorkerAddress()) &&
-				// 	!r.laWorker.IsSameAddress(txLog.WorkerChainAddr, r.laWorker.GetWorkerAddress()) {
-				// 	r.logger.Warnln("THE SAME")
-				// }
 
 				r.logger.Infoln("NEW SWAP")
 				newSwap := &storage.Swap{
@@ -235,5 +229,5 @@ func (r *RelayerSRV) getAutoRetryConfig(chain string) (int64, int) {
 	// 	autoRetryNum = r.Config.ChainConfig.WorkerChainAutoRetryNum
 	// }
 
-	return 1000, 10
+	return 10, 10
 }
