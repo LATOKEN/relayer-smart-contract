@@ -122,12 +122,24 @@ func (d *DataBase) ConfirmTx(tx *gorm.DB, txLog *TxLog) error {
 	case TxTypeSpend:
 		// BIND tokens(mainchain(e.g. btc, eth) -> lachain)
 		if err := d.UpdateSwapStatusWhenConfirmTx(tx, SwapTypeBind, txLog, []SwapStatus{
-			SwapStatusSpendSent}, nil, SwapStatusSpendConfirmed); err != nil {
+			SwapStatusPassedConfirmed, SwapStatusClaimSentConfirmed}, nil, SwapStatusSpendConfirmed); err != nil {
 			return err
 		}
 		// UNBIND tokens(lachain -> mainchain(e.g. btc, eth)
 		if err := d.UpdateSwapStatusWhenConfirmTx(tx, SwapTypeUnbind, txLog, []SwapStatus{
-			SwapStatusSpendSent}, nil, SwapStatusSpendConfirmed); err != nil {
+			SwapStatusPassedConfirmed, SwapStatusClaimSentConfirmed}, nil, SwapStatusSpendConfirmed); err != nil {
+			return err
+		}
+
+	case TxTypeExpired:
+		// BIND tokens(mainchain(e.g. btc, eth) -> lachain)
+		if err := d.UpdateSwapStatusWhenConfirmTx(tx, SwapTypeBind, txLog, []SwapStatus{
+			SwapStatusPassedConfirmed, SwapStatusClaimSentConfirmed, SwapStatusSpendConfirmed}, nil, SwapStatusExpiredConfirmed); err != nil {
+			return err
+		}
+		// UNBIND tokens(lachain -> mainchain(e.g. btc, eth)
+		if err := d.UpdateSwapStatusWhenConfirmTx(tx, SwapTypeUnbind, txLog, []SwapStatus{
+			SwapStatusPassedConfirmed, SwapStatusClaimSentConfirmed, SwapStatusSpendConfirmed}, nil, SwapStatusExpiredConfirmed); err != nil {
 			return err
 		}
 	}
@@ -149,7 +161,7 @@ func (d *DataBase) CreateTxSent(txSent *TxSent) error {
 
 // UpdateTxSentStatus ...
 func (d *DataBase) UpdateTxSentStatus(txSent *TxSent, status TxStatus) error {
-	return d.db.Model(txSent).Update(
+	return d.db.Model(TxSent{}).Where("swap_id = ? and chain = ? and tx_hash = ?", txSent.SwapID, txSent.Chain, txSent.TxHash).Update(
 		map[string]interface{}{
 			"status":      status,
 			"update_time": time.Now().Unix(),
