@@ -76,18 +76,6 @@ func CalcutateSwapID(originChainID, destChainID, nonce string) string {
 	return originChainID + destChainID + nonce
 }
 
-func Convertto6Decimals(amount string) string {
-	value, _ := new(big.Int).SetString(amount, 10)
-	ret := big.NewInt(0).Div(value, big.NewInt(1000000000000))
-	return ret.Text(10)
-}
-
-func Convertto18Decimals(amount string) string {
-	value, _ := new(big.Int).SetString(amount, 10)
-	ret := big.NewInt(0).Mul(big.NewInt(1000000000000), value)
-	return ret.Text(10)
-}
-
 func ConvertDecimals(originDecimals, destDecimals uint8, amount string) string {
 	origin := new(big.Int).SetInt64(int64(math.Pow10(int(originDecimals))))
 	dest := new(big.Int).SetInt64(int64(math.Pow10(int(destDecimals))))

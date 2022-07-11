@@ -2,6 +2,7 @@ package rlr
 
 import (
 	"fmt"
+	"math/big"
 	"strings"
 	"time"
 
@@ -39,6 +40,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 		SwapID:     swap.SwapID,
 		CreateTime: time.Now().Unix(),
 	}
+
 	var originWorker workers.IWorker
 	var destWorker workers.IWorker
 	for _, wrkr := range r.Workers {
@@ -76,6 +78,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 		r.storage.UpdateSwapStatus(swap, storage.SwapStatusDepositFailed, "")
 		return "", fmt.Errorf("could not send claim tx: %w", err)
 	}
+	// to check for decimals descrepancy between on origin and dest chain
 	var amount string
 	if originDecimals == destDecimals {
 		amount = swap.OutAmount
@@ -89,6 +92,24 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 	} else {
 		amount = utils.ConvertDecimals(originDecimals, destDecimals, swap.OutAmount)
 	}
+
+	// for token limits on any bridge swap
+	tokenCheck, err := r.storage.FetchSpecificTokenCheck(originWorker.GetChainName(), destWorker.GetChainName(), swap.ResourceID)
+	if err != nil {
+		r.logger.Infof("token check not found for origin(%s) dest(%s) resourceID(%s)\n", originWorker.GetChainName(), destWorker.GetChainName(), swap.ResourceID)
+	} else {
+		outAmountInFloat, _ := new(big.Int).SetString(amount, 10)
+		maxAmountInFloat := new(big.Int).SetInt64(tokenCheck.Amount)
+		if maxAmountInFloat.Cmp(outAmountInFloat) > 0 {
+			err = fmt.Errorf("Breached max amount limit, swap id = %s", swap.SwapID)
+			r.logger.Warnf(err.Error())
+			txSent.ErrMsg = err.Error()
+			txSent.Status = storage.TxSentStatusFailed
+			r.storage.UpdateSwapStatus(swap, storage.SwapStatusDepositFailed, "")
+			return "", fmt.Errorf("could not send claim tx: %w", err)
+		}
+	}
+
 	r.logger.Infof("claim parameters: depositNonce(%d) | sender(%s) | outAmount(%d) | resourceID(%s)\n",
 		swap.DepositNonce, swap.SenderAddr, amount, swap.ResourceID)
 

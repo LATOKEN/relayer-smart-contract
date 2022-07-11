@@ -83,8 +83,8 @@ type TxSent struct {
 }
 
 type TokenCheck struct {
-	OriginChainID      string `json:"origin_chain_id" gorm:"TEXT"`
-	DestinationChainID string `json:"destination_chain_id" gorm:"TEXT"`
-	ResourceID         string `json:"resource_id" gorm:"TEXT"`
-	Amount             int64  `json:"amount" gorm:"type:BIGINT"`
+	OriginChain      string `json:"origin_chain" gorm:"TEXT"`
+	DestinationChain string `json:"destination_chain" gorm:"TEXT"`
+	ResourceID       string `json:"resource_id" gorm:"TEXT"`
+	Amount           int64  `json:"amount" gorm:"type:BIGINT"`
 }
