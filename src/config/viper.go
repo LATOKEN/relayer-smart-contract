@@ -16,7 +16,6 @@ type Config interface {
 	ReadWorkersConfig() []*models.WorkerConfig
 	ReadLachainConfig() *models.WorkerConfig
 	ReadDBConfig() *models.StorageConfig
-	ReadTokenChecks() (checks []interface{})
 	ReadChains() []string
 	GetString(key string) string
 	GetStringMap(key string) map[string]string

@@ -27,7 +27,7 @@ type RelayerSRV struct {
 
 // CreateNewRelayerSRV ...
 func CreateNewRelayerSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig *models.WorkerConfig,
-	chainCfgs []*models.WorkerConfig, tokenChecks []interface{}) *RelayerSRV {
+	chainCfgs []*models.WorkerConfig) *RelayerSRV {
 	// init database
 	db, err := storage.InitStorage(gormDB)
 	if err != nil {
@@ -54,7 +54,6 @@ func CreateNewRelayerSRV(logger *logrus.Logger, gormDB *gorm.DB, laConfig *model
 		return nil
 	}
 	inst.Watcher = watcher.CreateNewWatcherSRV(logger, db, inst.Workers)
-	db.SaveTokenChecks(tokenChecks)
 	return &inst
 }
 

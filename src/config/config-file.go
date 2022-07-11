@@ -53,12 +53,6 @@ func (v *viperConfig) readWorkerConfig(name string) *models.WorkerConfig {
 	}
 }
 
-func (v *viperConfig) ReadTokenChecks() (checks []interface{}) {
-	allChecks := v.GetInterface("token_checks")
-	checks = allChecks.([]interface{})
-	return checks
-}
-
 // Reads storage params from config.json
 func (v *viperConfig) ReadDBConfig() *models.StorageConfig {
 	return &models.StorageConfig{

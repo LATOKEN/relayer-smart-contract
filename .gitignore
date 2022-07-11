@@ -1,2 +1,8 @@
 config-files/
 src/logs/
+src/.DS_Store
+src/app/.DS_Store
+src/common/.DS_Store
+src/config/.DS_Store
+src/models/.DS_Store
+src/service/.DS_Store
