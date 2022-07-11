@@ -1,0 +1,184 @@
+{
+    "name": "Relayer smart contract service",
+    "service": {
+      "host": "0.0.0.0",
+      "port": "8000"
+    },
+    "logger-level": "debug",
+    "chains": ["POS", "BSC", "ARB"],
+    "workers": {
+      "LA": {
+        "chain_id": 26,
+        "provider": "https://rpc-testnet.lachain.io",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0x3EeF916FBeC79EE5535e7725D42626B3C2B88598",
+        "private_key": "",
+        "dest_id": "00000000574c4131",
+        "native_resource_id": "",
+        "gas_limit": 900000000,
+        "gas_price": 1,
+        "fetch_interval": 2,
+        "confirm_num": 1,
+        "start_block_height": 0
+      },
+      "POS": {
+        "chain_id": 80001,
+        "provider": "https://rpc-mumbai.maticvigil.com/",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0xCcc6d112b8F8B98B3320e37C503a788c95872438",
+        "private_key": "",
+        "dest_id": "00000000004c4131",
+        "native_resource_id": "000000000000000506F638421d1478FEE8c58025e778420cc87BFaBAb72bB02F",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 1,
+        "confirm_num": 1,
+        "start_block_height": 0
+      },
+      "BSC": {
+        "chain_id": 97,
+        "provider": "https://data-seed-prebsc-1-s1.binance.org:8545/",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0x3e1dBc78dadc567e193671A768C9B3CA8E9cD05c",
+        "private_key": "",
+        "dest_id": "0000000000000061",
+        "native_resource_id": "00000000000000e6d7DC99370DD5589E2ACF3544DABC96a5543EBE71e3FE2388",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 2,
+        "confirm_num": 1,
+        "start_block_height": 0
+      },
+      "ETH": {
+        "chain_id": 3,
+        "provider": "https://eth-ropsten.gateway.pokt.network/v1/lb/62822b0225a687003a6dbdd3",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0xfc675e74b6a743ab9f4e093e1d708494b400213b",
+        "private_key": "",
+        "dest_id": "0000000000000003",
+        "native_resource_id": "00000000000000c4f76f223a578FF90Cc9472D0C3E67679Ef7c824f2d81B4C0F",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 5,
+        "confirm_num": 0,
+        "start_block_height": 0
+      },
+      "AVAX": {
+        "chain_id": 43113,
+        "provider": "https://api.avax-test.network/ext/bc/C/rpc",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0x5b58954d166027A623549b8e995Aa820F9Ac0040",
+        "private_key": "",
+        "dest_id": "000000000000a869",
+        "native_resource_id": "84821854532a24387d49c7c6ce1bf51bedaad1d1bc26ed9b6cc916e3da629b54",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 5,
+        "confirm_num": 0,
+        "start_block_height": 0
+      },
+      "FTM": {
+        "chain_id": 4002,
+        "provider": "https://rpc.testnet.fantom.network/",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0xdcd9A2A7734668f8B8e984b36db2E42c25dB158E",
+        "private_key": "",
+        "dest_id": "0000000000000fa2",
+        "native_resource_id": "6974f87e4417ba4d92341828774bd465ac5b40116269fc072263efa0c3926cc5",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 1,
+        "confirm_num": 0,
+        "start_block_height": 0
+      },
+      "CRO": {
+        "chain_id": 338,
+        "provider": "https://cronos-testnet-3.crypto.org:8545/",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0x924f0DFD8E5f125912504DcB9739A2f06B234939",
+        "private_key": "",
+        "dest_id": "0000000000000152",
+        "native_resource_id": "f3c4f354c0d83ba1d7c6ad0304b7105bc298ec38afd3ffe7939a00af9d6e3cb1",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 15,
+        "confirm_num": 0,
+        "start_block_height": 0
+      },
+      "ARB": {
+        "chain_id": 421611,
+        "provider": "https://rinkeby.arbitrum.io/rpc",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0x9Bc04A752580964f43eDd882B2728cfBed3891Ac",
+        "private_key": "",
+        "dest_id": "0000000000066EEB",
+        "native_resource_id": "268b0e671d168c69ae90250d1dd7598e8cc92001ecc3ba5b24035b36456901c7",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 15,
+        "confirm_num": 0,
+        "start_block_height": 0
+      },
+      "HT": {
+        "chain_id": 256,
+        "provider": "https://http-testnet.hecochain.com",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0x9Bc04A752580964f43eDd882B2728cfBed3891Ac",
+        "private_key": "",
+        "dest_id": "0000000000000100",
+        "native_resource_id": "46484e811889546f286b1e72fb32e3f23fb57ffc2b4a443a96ce38043ed310f0",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 15,
+        "confirm_num": 0,
+        "start_block_height": 0
+      },
+      "ONE": {
+        "chain_id": 1666700000,
+        "provider": "https://api.s0.b.hmny.io",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0xeB1a944294993804bD6136e1536e50aA7021249C",
+        "private_key": "",
+        "dest_id": "000000006357D2E0",
+        "native_resource_id": "ef640759c780c1446ea60312ed24543ba9c9d00153d64a6ea360bee834774cfc",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 15,
+        "confirm_num": 0,
+        "start_block_height": 0
+      },
+      "OP": {
+        "chain_id": 69,
+        "provider": "https://kovan.optimism.io",
+        "worker_addr": "0xc8548CDe7d472dD578ae28352024BE86bcCD073D",
+        "contract_addr": "0x77ac1579223dcdc8f5c40bb4f5551f66f46e406c",
+        "private_key": "",
+        "dest_id": "0000000000000045",
+        "native_resource_id": "e017209828f775770d858acaf21d972bf52cb393a3c4523df41984634fe6e560",
+        "gas_limit": 300000,
+        "gas_price": 20000000000,
+        "fetch_interval": 15,
+        "confirm_num": 0,
+        "start_block_height": 0
+      }
+    },
+    "storage": {
+      "url": "host=%s port=%d user=%s dbname=%s password=%s sslmode=%s",
+      "host": "localhost",
+      "port": 5432,
+      "ssl_mode": "disable",
+      "driver": "postgres",
+      "db_name": "postgres",
+      "user": "postgres",
+      "password": "postgres"
+    },
+    "token_checks": [
+      {
+        "origin_chain": "ARB",
+        "destination_chain": "LA",
+        "resource_id": "000000000000001903eb5D26Aa73D863E9B53B880c9Aeff27A1d40d334095f77",
+        "amount": 1000
+      }
+    ]
+  }
+  
