@@ -100,7 +100,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 	} else {
 		outAmountInFloat, _ := new(big.Int).SetString(amount, 10)
 		maxAmountInFloat := new(big.Int).SetInt64(tokenCheck.Amount)
-		if maxAmountInFloat.Cmp(outAmountInFloat) > 0 {
+		if maxAmountInFloat.Cmp(outAmountInFloat) < 0 {
 			err = fmt.Errorf("Breached max amount limit, swap id = %s", swap.SwapID)
 			r.logger.Warnf(err.Error())
 			txSent.ErrMsg = err.Error()
