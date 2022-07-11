@@ -23,7 +23,6 @@ func main() {
 	chainCfgs := cfg.ReadWorkersConfig()
 	dbConfig := cfg.ReadDBConfig()
 	dbURL := fmt.Sprintf(dbConfig.URL, dbConfig.DBHOST, dbConfig.DBPORT, dbConfig.DBUser, dbConfig.DBName, dbConfig.DBPassword, dbConfig.DBSSL)
-	tokenChecks := cfg.ReadTokenChecks()
 	// init logrus logger
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.TextFormatter{
@@ -66,7 +65,7 @@ func main() {
 		logger.Infof("System signal: %+v\n", sign)
 		cancel()
 	}()
-	app := app.NewApp(logger, srvURL, db, laCfg, chainCfgs, tokenChecks)
+	app := app.NewApp(logger, srvURL, db, laCfg, chainCfgs)
 	//run App
 	app.Run(ctx)
 }
