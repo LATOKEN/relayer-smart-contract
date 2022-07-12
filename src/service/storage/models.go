@@ -82,7 +82,9 @@ type TxSent struct {
 	UpdateTime int64    `json:"update_time" gorm:"type:BIGINT"`
 }
 
-type ResourceId struct {
-	Name string `gorm:"primaryKey"`
-	ID   string `gorm:"type:TEXT"`
+type TokenCheck struct {
+	OriginChainID      string `json:"origin_chain_id" gorm:"TEXT"`
+	DestinationChainID string `json:"destination_chain_id" gorm:"TEXT"`
+	ResourceID         string `json:"resource_id" gorm:"TEXT"`
+	Amount             int64  `json:"amount" gorm:"type:BIGINT"`
 }

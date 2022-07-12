@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
-	"github.com/LATOKEN/relayer-smart-contract.git/src/service/storage"
 
 	"github.com/spf13/viper"
 )
@@ -17,7 +16,6 @@ type Config interface {
 	ReadWorkersConfig() []*models.WorkerConfig
 	ReadLachainConfig() *models.WorkerConfig
 	ReadDBConfig() *models.StorageConfig
-	ReadResourceIDs() []*storage.ResourceId
 	ReadChains() []string
 	GetString(key string) string
 	GetStringMap(key string) map[string]string
@@ -25,6 +23,7 @@ type Config interface {
 	GetBool(key string) bool
 	GetFloat64(key string) float64
 	GetStringSlice(key string) []string
+	GetInterface(key string) interface{}
 	Init()
 }
 
@@ -38,7 +37,7 @@ func (v *viperConfig) Init() {
 	replacer := strings.NewReplacer(`.`, `_`)
 	viper.SetEnvKeyReplacer(replacer)
 	viper.SetConfigType(`json`)
-	// viper.SetConfigName("config1.json")
+	// viper.SetConfigName("config.json")
 	viper.SetConfigName(os.Getenv("FILE_NAME"))
 	if _, err := os.Stat("./config.json.local"); !os.IsNotExist(err) {
 		viper.SetConfigFile(`config.json.local`)
@@ -69,6 +68,10 @@ func (v *viperConfig) GetStringMap(key string) map[string]string {
 
 func (v *viperConfig) GetStringSlice(key string) []string {
 	return viper.GetStringSlice(key)
+}
+
+func (v *viperConfig) GetInterface(key string) interface{} {
+	return viper.Get(key)
 }
 
 // NewViperConfig creates new viper for reading config.json

@@ -7,7 +7,6 @@ import (
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
 	rlr "github.com/LATOKEN/relayer-smart-contract.git/src/service"
-	"github.com/LATOKEN/relayer-smart-contract.git/src/service/storage"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -25,13 +24,13 @@ type App struct {
 
 // NewApp is initializes the app
 func NewApp(logger *logrus.Logger, addr string, db *gorm.DB,
-	laCfg *models.WorkerConfig, chainCfgs []*models.WorkerConfig, resourceIDs []*storage.ResourceId) *App {
+	laCfg *models.WorkerConfig, chainCfgs []*models.WorkerConfig) *App {
 	// create new app
 	inst := &App{
 		logger:  logger,
 		router:  mux.NewRouter(),
 		server:  &http.Server{Addr: addr},
-		relayer: rlr.CreateNewRelayerSRV(logger, db, laCfg, chainCfgs, resourceIDs),
+		relayer: rlr.CreateNewRelayerSRV(logger, db, laCfg, chainCfgs),
 	}
 	// set router
 	inst.router = mux.NewRouter()
