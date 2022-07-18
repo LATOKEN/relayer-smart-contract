@@ -188,7 +188,7 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 
 	if height >= clientResp.Number.Int64() {
 		return nil, fmt.Errorf("not found")
-	} else if clientResp.Number.Int64()-height >= 100 {
+	} else if clientResp.Number.Int64()-height >= 100 && height != 0 {
 		return nil, fmt.Errorf("wrong block number recieved from rpc")
 	}
 
