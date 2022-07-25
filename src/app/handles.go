@@ -42,7 +42,7 @@ func (a *App) SwapStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err := a.relayer.GetSwapStatus(&msg)
 	if err != nil {
-		common.ResponJSON(w, http.StatusInternalServerError, createNewError("get swap from database", err.Error()))
+		common.ResponJSON(w, http.StatusNotFound, createNewError("get swap from database", err.Error()))
 		return
 	}
 
