@@ -59,7 +59,13 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 		return "", fmt.Errorf("could not send claim tx: %s", err)
 	}
 
-	originDecimals, err := originWorker.GetDecimalsFromResourceID(swap.ResourceID)
+	resID := swap.ResourceID
+	if worker.GetChainName() == "LA" {
+		_, resID = utils.GetGasSwapResourceIDs(swap.ResourceID)
+	} else {
+		resID, _ = utils.GetGasSwapResourceIDs(swap.ResourceID)
+	}
+	originDecimals, err := originWorker.GetDecimalsFromResourceID(resID)
 	if err != nil {
 		println("error in decimals", err.Error())
 		txSent.ErrMsg = err.Error()
@@ -68,7 +74,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 		return "", fmt.Errorf("could not send claim tx: %w", err)
 	}
 
-	destDecimals, err := destWorker.GetDecimalsFromResourceID(swap.ResourceID)
+	destDecimals, err := destWorker.GetDecimalsFromResourceID(resID)
 	if err != nil {
 		println("error in decimals", err.Error())
 		txSent.ErrMsg = err.Error()
