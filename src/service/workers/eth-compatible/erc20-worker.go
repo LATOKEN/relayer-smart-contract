@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"crypto/ecdsa"
-	"encoding/hex"
 	"fmt"
 	"math/big"
 	"strings"
@@ -478,10 +477,6 @@ func (w *Erc20Worker) GetDecimals(tokenAddr string) (uint8, error) {
 
 func (w *Erc20Worker) GetDecimalsFromResourceID(resourceID string) (uint8, error) {
 
-	swapIdentifier := hex.EncodeToString([]byte("swap"))
-	if resourceID[:8] == swapIdentifier {
-		resourceID = "0000000000000000000000000000000000000000" + resourceID[40:]
-	}
 	if strings.ToLower(w.config.NativeResourceID) == strings.ToLower(resourceID) {
 		return 18, nil
 	}
