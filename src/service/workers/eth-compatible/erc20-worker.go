@@ -187,8 +187,6 @@ func (w *Erc20Worker) GetBlockAndTxs(height int64) (*models.BlockAndTxLogs, erro
 
 	if height >= clientResp.Number.Int64() {
 		return nil, fmt.Errorf("not found")
-	} else if clientResp.Number.Int64()-height >= 3500 && height != 0 {
-		return nil, fmt.Errorf("wrong block number recieved from rpc")
 	}
 
 	logs, err := w.getLogs(height, clientResp.Number.Int64())
@@ -215,8 +213,10 @@ func (w *Erc20Worker) GetFetchInterval() time.Duration {
 
 // getLogs ...
 func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, error) {
-	if curHeight == 0 || nextHeight-curHeight > 3500 {
+	if curHeight == 0 {
 		curHeight = nextHeight - 1
+	} else if nextHeight-curHeight > 3500 {
+		nextHeight = curHeight + 1
 	}
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
 		// BlockHash: &blockHash,
