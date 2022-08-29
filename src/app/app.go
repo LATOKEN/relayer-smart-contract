@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"net/http"
+	_ "net/http/pprof"
 	"time"
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
@@ -65,6 +66,9 @@ func (a *App) Run(ctx context.Context) {
 		if err := a.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			a.logger.Fatal(err)
 		}
+	}()
+	go func() {
+		http.ListenAndServe("127.0.0.1:8898", nil)
 	}()
 
 	a.logger.Infof("Relayer service has started on %s\nPress ctrl + C to exit.", a.server.Addr)
