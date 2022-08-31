@@ -204,12 +204,6 @@ func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, er
 
 		txLog := event.ToTxLog()
 
-		// 	w.logger.Infof("Deposited\ndestination chain ID: 0x%s\nresource ID: 0x%s\ndeposit nonce: %d\nrecipient address: %s\namount address: %s\ntoken address: %s\n",
-		// 		txLog.DestinationChainID, txLog.ResourceID, txLog.DepositNonce, txLog.SenderAddr, txLog.ReceiverAddr, txLog.OutAmount, txLog.InTokenAddr)
-		// } else if txLog.TxType == storage.TxTypeClaim {
-		// 	w.logger.Infof("\nProposalEvent:\nOrigin chain ID: 0x%s\ndeposit nonce: %d\ndeposit nonce: %v\nstatus: %v\nresource ID: 0x%s\n",
-		// 		txLog.OriginСhainID, txLog.DepositNonce, txLog.SwapStatus, txLog.ResourceID, txLog.ReceiverAddr)
-		// }
 		txLog.Chain = w.chainName
 		txLog.Height = int64(log.BlockNumber)
 		txLog.BlockHash = log.BlockHash.Hex()
@@ -227,6 +221,7 @@ func (w *Erc20Worker) GetHeight() (int64, error) {
 	if err != nil {
 		return 0, nil
 	}
+	defer w.client.Close()
 	return header.Number.Int64(), nil
 }
 
@@ -311,18 +306,18 @@ func (w *Erc20Worker) GetWorkerAddress() string {
 
 // GetSentTxStatus ...
 func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
-	// _, isPending, err := w.client.TransactionByHash(context.Background(), common.HexToHash(hash))
-	// if err != nil {
-	// 	w.logger.Errorln("GetSentTxStatus, err = ", err)
-	// 	return storage.TxSentStatusNotFound
-	// }
-
-	// if isPending {
-	// 	return storage.TxSentStatusPending
-	// }
-
 	txReceipt, err := w.client.TransactionReceipt(context.Background(), common.HexToHash(hash))
 	if err != nil {
+		_, isPending, err := w.client.TransactionByHash(context.Background(), common.HexToHash(hash))
+		if err != nil {
+			if err == ethereum.NotFound {
+				return storage.TxSentStatusLost
+			}
+			return storage.TxSentStatusNotFound
+		}
+		if isPending {
+			return storage.TxSentStatusPending
+		}
 		return storage.TxSentStatusNotFound
 	}
 
