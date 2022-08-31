@@ -204,8 +204,7 @@ func (r *RelayerSRV) handleTxSent(chain string, swap *storage.Swap, txType stora
 
 	if timeElapsed > autoRetryTimeout &&
 		(txStatus == storage.TxSentStatusNotFound ||
-			txStatus == storage.TxSentStatusInit ||
-			txStatus == storage.TxSentStatusPending) {
+			txStatus == storage.TxSentStatusInit) {
 
 		r.logger.Warnln("timeElapsed(%d) | autoRetryTimeout(%d) \n", timeElapsed, autoRetryTimeout)
 		if len(txsSent) >= autoRetryNum {
