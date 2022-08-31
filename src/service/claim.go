@@ -60,7 +60,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 	}
 
 	resID := swap.ResourceID
-	if worker.GetChainName() == "LA" {
+	if swap.DestinationChainID == r.laWorker.GetDestinationID() {
 		_, resID = utils.GetGasSwapResourceIDs(swap.ResourceID)
 	} else {
 		resID, _ = utils.GetGasSwapResourceIDs(swap.ResourceID)
