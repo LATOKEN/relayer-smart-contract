@@ -177,7 +177,6 @@ func (w *Erc20Worker) GetFetchInterval() time.Duration {
 
 // getLogs ...
 func (w *Erc20Worker) getLogs(curHeight, nextHeight int64) ([]*storage.TxLog, error) {
-
 	logs, err := w.client.FilterLogs(context.Background(), ethereum.FilterQuery{
 		// BlockHash: &blockHash,
 		FromBlock: big.NewInt(curHeight + 1),
