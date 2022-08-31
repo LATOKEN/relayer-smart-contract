@@ -220,7 +220,6 @@ func (w *Erc20Worker) GetHeight() (int64, error) {
 	if err != nil {
 		return 0, nil
 	}
-	defer w.client.Close()
 	return header.Number.Int64(), nil
 }
 
