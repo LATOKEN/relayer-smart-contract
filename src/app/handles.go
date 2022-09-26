@@ -19,6 +19,7 @@ func (a *App) Endpoints(w http.ResponseWriter, r *http.Request) {
 		Endpoints: []string{
 			"/status",
 			"/status/{destination_chain}/{sender}/{receipt}/{amount}/{tx_hash}",
+			"/status/{tx_hash}",
 		},
 	}
 
@@ -41,6 +42,24 @@ func (a *App) SwapStatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	status, err := a.relayer.GetSwapStatus(&msg)
+	if err != nil {
+		common.ResponJSON(w, http.StatusNotFound, createNewError("get swap from database", err.Error()))
+		return
+	}
+
+	common.ResponJSON(w, http.StatusOK, status)
+}
+
+// StatusHandler ...
+func (a *App) SwapStatusByTxHashHandler(w http.ResponseWriter, r *http.Request) {
+	txHash := mux.Vars(r)["tx_hash"]
+	if txHash == "" {
+		a.logger.Errorf("Empty request(/status/{tx_hash})")
+		common.ResponJSON(w, http.StatusInternalServerError, createNewError("empty request", ""))
+		return
+	}
+
+	status, err := a.relayer.GetSwapByTxHashStatus(txHash)
 	if err != nil {
 		common.ResponJSON(w, http.StatusNotFound, createNewError("get swap from database", err.Error()))
 		return
