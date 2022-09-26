@@ -88,6 +88,19 @@ func (r *RelayerSRV) GetSwapStatus(req *models.SwapStatus) (storage.SwapStatus, 
 	return "", nil
 }
 
+func (r *RelayerSRV) GetSwapByTxHashStatus(txHash string) (storage.SwapStatus, error) {
+	swap, err := r.storage.GetSwapByTxHash(txHash)
+	if err != nil {
+		r.logger.Errorf("GetSwapByTxHashStatus, txHash: %v, failed with error: %v", txHash, err)
+		return "", err
+	}
+	if swap != nil {
+		return swap.Status, nil
+	}
+
+	return "", nil
+}
+
 // Status ...
 func (r *RelayerSRV) StatusOfWorkers() (map[string]*models.WorkerStatus, error) {
 	// get blockchain heights from workers and from database
