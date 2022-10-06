@@ -14,7 +14,7 @@ import (
 func (r *RelayerSRV) emitChainSendClaim() {
 	for {
 		swaps := r.storage.GetSwapsByTypeAndStatuses(
-			[]storage.SwapStatus{storage.SwapStatusDepositConfirmed, storage.SwapStatusClaimConfirmed, storage.SwapStatusDepositInit, storage.SwapStatusClaimSentFailed})
+			[]storage.SwapStatus{storage.SwapStatusDepositConfirmed, storage.SwapStatusClaimConfirmed, storage.SwapStatusDepositInit, storage.SwapStatusClaimSentFailed, storage.SwapStatusClaimSent})
 		for _, swap := range swaps {
 			if swap.Status == storage.SwapStatusDepositConfirmed {
 				r.logger.Info("attempting to send claim for swap")
@@ -98,7 +98,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 	r.logger.Infof("claim parameters: depositNonce(%d) | sender(%s) | outAmount(%d) | resourceID(%s)\n",
 		swap.DepositNonce, swap.SenderAddr, amount, swap.ResourceID)
 
-	txHash, err := worker.Vote(swap.DepositNonce, utils.StringToBytes8(swap.OriginChainID), utils.StringToBytes8(swap.DestinationChainID),
+	txHash, nonce, err := worker.Vote(swap.DepositNonce, utils.StringToBytes8(swap.OriginChainID), utils.StringToBytes8(swap.DestinationChainID),
 		utils.StringToBytes32(swap.ResourceID), swap.ReceiverAddr, amount)
 	if err != nil {
 		txSent.ErrMsg = err.Error()
@@ -107,6 +107,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 		return "", fmt.Errorf("could not send claim tx: %w", err)
 	}
 	txSent.TxHash = txHash
+	txSent.Nonce = nonce
 	r.storage.UpdateSwapStatus(swap, storage.SwapStatusClaimSent, "")
 
 	r.logger.Infof("send claim tx success | chain=%s, swap_ID=%s, tx_hash=%s", worker.GetChainName(),

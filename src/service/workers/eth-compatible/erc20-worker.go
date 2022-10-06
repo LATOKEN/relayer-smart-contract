@@ -6,6 +6,7 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
+	"strconv"
 	"strings"
 	"time"
 
@@ -223,31 +224,31 @@ func (w *Erc20Worker) GetHeight() (int64, error) {
 }
 
 // Vote ...
-func (w *Erc20Worker) Vote(depositNonce uint64, originchainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, error) {
+func (w *Erc20Worker) Vote(depositNonce uint64, originchainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, string, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	instance, err := labr.NewLabr(w.swapContractAddr, w.client)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	value, _ := new(big.Int).SetString(amount, 10)
 	tx, err := instance.VoteProposal(auth, originchainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return tx.Hash().String(), nil
+	return tx.Hash().String(), auth.Nonce.String(), nil
 }
 
 func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
 	var result hexutil.Uint64
 	rpcClient := jsonrpc.NewClient(w.provider)
 
-	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "pending")
+	resp, err := rpcClient.Call("eth_getTransactionCount", w.config.WorkerAddr.Hex(), "latest")
 	if err != nil {
 		return 0, err
 	}
@@ -302,17 +303,26 @@ func (w *Erc20Worker) GetWorkerAddress() string {
 }
 
 // GetSentTxStatus ...
-func (w *Erc20Worker) GetSentTxStatus(hash string) storage.TxStatus {
+func (w *Erc20Worker) GetSentTxStatus(hash string, nonce string) storage.TxStatus {
 	txReceipt, err := w.client.TransactionReceipt(context.Background(), common.HexToHash(hash))
 	if err != nil {
-		_, isPending, err := w.client.TransactionByHash(context.Background(), common.HexToHash(hash))
+		txNonce, err := strconv.ParseUint(nonce, 10, 64)
 		if err != nil {
-			if err == ethereum.NotFound {
-				return storage.TxSentStatusLost
+			_, isPending, err := w.client.TransactionByHash(context.Background(), common.HexToHash(hash))
+			if err != nil {
+				if err == ethereum.NotFound {
+					return storage.TxSentStatusLost
+				}
+				return storage.TxSentStatusNotFound
+			}
+			if isPending {
+				return storage.TxSentStatusPending
 			}
 			return storage.TxSentStatusNotFound
 		}
-		if isPending {
+
+		txCount, _ := w.GetTxCountLatest()
+		if txNonce >= txCount {
 			return storage.TxSentStatusPending
 		}
 		return storage.TxSentStatusNotFound
