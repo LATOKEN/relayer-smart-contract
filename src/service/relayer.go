@@ -152,6 +152,7 @@ func (r *RelayerSRV) ConfirmWorkerTx(worker workers.IWorker) {
 					InTokenAddr:        txLog.InTokenAddr,
 					DepositNonce:       txLog.DepositNonce,
 					ResourceID:         txLog.ResourceID,
+					StepIndex:          txLog.StepIndex,
 					OutAmount:          txLog.OutAmount,
 					DestinationChainID: txLog.DestinationChainID,
 					OriginChainID:      txLog.OriginСhainID,

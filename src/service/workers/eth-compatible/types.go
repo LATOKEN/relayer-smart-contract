@@ -72,6 +72,7 @@ func (ev DepositEvent) ToTxLog() *storage.TxLog {
 		OriginСhainID:      common.Bytes2Hex(ev.OriginChainID[:]),
 		SwapID:             utils.CalcutateSwapID(common.Bytes2Hex(ev.OriginChainID[:]), common.Bytes2Hex(ev.DestinationChainID[:]), fmt.Sprint(ev.DepositNonce)),
 		ResourceID:         common.Bytes2Hex(ev.ResourceID[:]),
+		StepIndex:          ev.Params[0],
 		DepositNonce:       ev.DepositNonce,
 		SenderAddr:         ev.Depositor.Hex(),
 		ReceiverAddr:       ev.RecipientAddress.Hex(),
