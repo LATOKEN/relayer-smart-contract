@@ -55,18 +55,6 @@ func (d *DataBase) GetSwapByTxHash(txHash string) (*Swap, error) {
 	return swap, nil
 }
 
-// GetSwapByTxHash ...
-func (d *DataBase) GetSwapByTxHash(txHash string) (*Swap, error) {
-	swap := &Swap{}
-	if err := d.db.Where("tx_hash = ? and status in (?)", txHash,
-		[]SwapStatus{SwapStatusDepositConfirmed, SwapStatusClaimSent, SwapStatusClaimConfirmed, SwapStatusClaimSentFailed, SwapStatusDepositFailed, SwapStatusPassedConfirmed, SwapStatusPassedSent, SwapStatusSpendSent, SwapStatusSpendConfirmed, SwapStatusRejected}).
-		Find(&swap).Error; err != nil {
-		return nil, err
-	}
-
-	return swap, nil
-}
-
 // UpdateSwapStatus ...
 func (d *DataBase) UpdateSwapStatus(swap *Swap, status SwapStatus, rOutAmount string) {
 	swap.Status = status
