@@ -32,7 +32,7 @@ type TxLog struct {
 	DestinationChainID string      `gorm:"type:TEXT"`
 	DepositNonce       uint64      `gorm:"type:BIGINT"`
 	ResourceID         string      `gorm:"type:TEXT"`
-	StepIndex          uint8       `gorm:"type:UINT"`
+	StepIndex          uint8       `gorm:"type:BIGINT"`
 	SwapStatus         SwapStatus  `gorm:"type:TEXT"`
 	ExpireHeight       int64       `gorm:"type:BIGINT"`
 	Timestamp          int64       `gorm:"type:BIGINT"`
