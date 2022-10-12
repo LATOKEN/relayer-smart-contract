@@ -6,7 +6,6 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"math/big"
-	"strconv"
 	"strings"
 	"time"
 
@@ -223,24 +222,24 @@ func (w *Erc20Worker) GetHeight() (int64, error) {
 }
 
 // Vote ...
-func (w *Erc20Worker) Vote(depositNonce uint64, originchainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, string, error) {
+func (w *Erc20Worker) Vote(depositNonce uint64, originchainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, stepIndex uint8, receiptAddr string, amount string) (string, uint64, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
-		return "", "", err
+		return "", 0, err
 	}
 
 	instance, err := labr.NewLabr(w.swapContractAddr, w.client)
 	if err != nil {
-		return "", "", err
+		return "", 0, err
 	}
 
 	value, _ := new(big.Int).SetString(amount, 10)
 	tx, err := instance.VoteProposal(auth, originchainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
 	if err != nil {
-		return "", "", err
+		return "", 0, err
 	}
 
-	return tx.Hash().String(), auth.Nonce.String(), nil
+	return tx.Hash().String(), auth.Nonce.Uint64(), nil
 }
 
 func (w *Erc20Worker) GetTxCountLatest() (uint64, error) {
@@ -302,11 +301,10 @@ func (w *Erc20Worker) GetWorkerAddress() string {
 }
 
 // GetSentTxStatus ...
-func (w *Erc20Worker) GetSentTxStatus(hash string, nonce string) storage.TxStatus {
+func (w *Erc20Worker) GetSentTxStatus(hash string, nonce uint64) storage.TxStatus {
 	txReceipt, err := w.client.TransactionReceipt(context.Background(), common.HexToHash(hash))
 	if err != nil {
-		txNonce, err := strconv.ParseUint(nonce, 10, 64)
-		if err != nil {
+		if nonce == 0 {
 			_, isPending, err := w.client.TransactionByHash(context.Background(), common.HexToHash(hash))
 			if err != nil {
 				if err == ethereum.NotFound {
@@ -321,7 +319,7 @@ func (w *Erc20Worker) GetSentTxStatus(hash string, nonce string) storage.TxStatu
 		}
 
 		txCount, _ := w.GetTxCountLatest()
-		if txNonce >= txCount {
+		if nonce >= txCount {
 			return storage.TxSentStatusPending
 		}
 		return storage.TxSentStatusNotFound

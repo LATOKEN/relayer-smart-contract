@@ -31,7 +31,7 @@ type IWorker interface {
 	// // GetColdWalletAddress returns the address of the relayer's cold wallet
 	// GetColdWalletAddress() string
 	// GetSentTxStatus returns status of tx sent
-	GetSentTxStatus(hash string, nonce string) storage.TxStatus
+	GetSentTxStatus(hash string, nonce uint64) storage.TxStatus
 	// // GetBalance returns balance of swap token for any address
 	// GetBalance(address, tokenSymbol string) (*big.Int, error)
 	// // GetStatus returns status of relayer account(balance eg)
@@ -54,5 +54,5 @@ type IWorker interface {
 	// CreateRequest sends wrapped tokens tx
 	//	CreateRequest(swapID common.Hash) (string, error)
 	// Vote
-	Vote(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, string, error)
+	Vote(depositNonce uint64, originChainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, stepIndex uint8, receiptAddr string, amount string) (string, uint64, error)
 }

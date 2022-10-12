@@ -240,5 +240,5 @@ func (r *RelayerSRV) getAutoRetryConfig(chain string) (int64, int) {
 	// 	autoRetryNum = r.Config.ChainConfig.WorkerChainAutoRetryNum
 	// }
 
-	return 10, 10
+	return 20, 10
 }
