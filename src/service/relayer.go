@@ -195,7 +195,7 @@ func (r *RelayerSRV) CheckTxSent(worker workers.IWorker) {
 
 	for _, txSent := range txsSent {
 		// Get status of tx from chain
-		status := worker.GetSentTxStatus(txSent.TxHash)
+		status := worker.GetSentTxStatus(txSent.TxHash, txSent.Nonce)
 		if err := r.storage.UpdateTxSentStatus(txSent, status); err != nil {
 			r.logger.WithFields(logrus.Fields{"function": "CheckTxSent() | UpdateTxSentStatus()"}).Errorln(err)
 			return
@@ -240,5 +240,5 @@ func (r *RelayerSRV) getAutoRetryConfig(chain string) (int64, int) {
 	// 	autoRetryNum = r.Config.ChainConfig.WorkerChainAutoRetryNum
 	// }
 
-	return 10, 10
+	return 120, 2
 }
