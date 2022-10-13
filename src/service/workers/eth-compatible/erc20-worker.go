@@ -302,6 +302,7 @@ func (w *Erc20Worker) GetWorkerAddress() string {
 
 // GetSentTxStatus ...
 func (w *Erc20Worker) GetSentTxStatus(hash string, nonce uint64) storage.TxStatus {
+	txCount, _ := w.GetTxCountLatest()
 	txReceipt, err := w.client.TransactionReceipt(context.Background(), common.HexToHash(hash))
 	if err != nil {
 		if nonce == 0 {
@@ -318,7 +319,6 @@ func (w *Erc20Worker) GetSentTxStatus(hash string, nonce uint64) storage.TxStatu
 			return storage.TxSentStatusNotFound
 		}
 
-		txCount, _ := w.GetTxCountLatest()
 		if nonce >= txCount {
 			return storage.TxSentStatusPending
 		}
