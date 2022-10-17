@@ -222,7 +222,7 @@ func (w *Erc20Worker) GetHeight() (int64, error) {
 }
 
 // Vote ...
-func (w *Erc20Worker) Vote(depositNonce uint64, originchainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, receiptAddr string, amount string) (string, uint64, error) {
+func (w *Erc20Worker) Vote(depositNonce uint64, originchainID [8]byte, destinationChainID [8]byte, resourceID [32]byte, stepIndex uint8, receiptAddr string, amount string) (string, uint64, error) {
 	auth, err := w.getTransactor()
 	if err != nil {
 		return "", 0, err
@@ -234,7 +234,7 @@ func (w *Erc20Worker) Vote(depositNonce uint64, originchainID [8]byte, destinati
 	}
 
 	value, _ := new(big.Int).SetString(amount, 10)
-	tx, err := instance.VoteProposal(auth, originchainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value)
+	tx, err := instance.VoteProposal(auth, originchainID, destinationChainID, depositNonce, resourceID, common.HexToAddress(receiptAddr), value, []byte{stepIndex})
 	if err != nil {
 		return "", 0, err
 	}

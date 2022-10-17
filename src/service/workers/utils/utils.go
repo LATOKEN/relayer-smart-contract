@@ -2,7 +2,6 @@ package utils
 
 import (
 	"crypto/ecdsa"
-	"encoding/hex"
 	"math"
 	"math/big"
 
@@ -85,13 +84,6 @@ func ConvertDecimals(originDecimals, destDecimals uint8, amount string) string {
 	return new(big.Int).Quo(new(big.Int).Mul(amountInFloat, dest), origin).String()
 }
 
-func GetGasSwapResourceIDs(resourceID string) (destResourceID, originResourceID string) {
-	swapIdentifier := hex.EncodeToString([]byte("swap"))
-	if resourceID[:8] == swapIdentifier {
-		originResourceID = "00000000000000000000000000000000000000000000" + resourceID[44:]
-		destResourceID = "00000000000000000000000000000000000000000000" + resourceID[24:44]
-		return destResourceID, originResourceID
-	} else {
-		return resourceID, resourceID
-	}
+func GetCurrentStep(resourceID string, stepIndex uint8) string {
+	return resourceID[16*stepIndex:16*stepIndex+8] + "00000000000000000000000000000000000000000000000000000000"
 }

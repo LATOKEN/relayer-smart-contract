@@ -59,12 +59,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 		return "", fmt.Errorf("could not send claim tx: %s", err)
 	}
 
-	resID := swap.ResourceID
-	if swap.DestinationChainID == r.laWorker.GetDestinationID() {
-		_, resID = utils.GetGasSwapResourceIDs(swap.ResourceID)
-	} else {
-		resID, _ = utils.GetGasSwapResourceIDs(swap.ResourceID)
-	}
+	resID := utils.GetCurrentStep(swap.ResourceID, swap.StepIndex)
 	originDecimals, err := originWorker.GetDecimalsFromResourceID(resID)
 	if err != nil {
 		println("error in decimals", err.Error())
@@ -99,7 +94,7 @@ func (r *RelayerSRV) sendClaim(worker workers.IWorker, swap *storage.Swap) (stri
 		swap.DepositNonce, swap.SenderAddr, amount, swap.ResourceID)
 
 	txHash, nonce, err := worker.Vote(swap.DepositNonce, utils.StringToBytes8(swap.OriginChainID), utils.StringToBytes8(swap.DestinationChainID),
-		utils.StringToBytes32(swap.ResourceID), swap.ReceiverAddr, amount)
+		utils.StringToBytes32(swap.ResourceID), swap.StepIndex, swap.ReceiverAddr, amount)
 	if err != nil {
 		txSent.ErrMsg = err.Error()
 		txSent.Status = storage.TxSentStatusNotFound
