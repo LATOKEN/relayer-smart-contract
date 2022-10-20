@@ -20,7 +20,6 @@ import (
 func main() {
 	isDevMode := flag.Bool("dev", false, "dev mode")
 	flag.Parse()
-	fmt.Printf("GOT falg %b\n", *isDevMode)
 	cfg := config.NewViperConfig(*isDevMode)
 	// init logrus logger
 	logger := logrus.New()
