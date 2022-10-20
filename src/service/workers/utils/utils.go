@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/ecdsa"
 	"encoding/hex"
+	"errors"
 	"math"
 	"math/big"
 
@@ -94,4 +95,17 @@ func GetGasSwapResourceIDs(resourceID string) (destResourceID, originResourceID 
 	} else {
 		return resourceID, resourceID
 	}
+}
+
+func PvtKeyToAddress(pvtKey string) (string, error) {
+	privateKey, err := crypto.HexToECDSA(pvtKey)
+	if err != nil {
+		return "", err
+	}
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		return "", errors.New("error casting public key to ECDSA")
+	}
+	return crypto.PubkeyToAddress(*publicKeyECDSA).Hex(), nil
 }
