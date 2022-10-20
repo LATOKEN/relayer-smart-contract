@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/ecdsa"
+	"errors"
 	"math"
 	"math/big"
 
@@ -86,4 +87,17 @@ func ConvertDecimals(originDecimals, destDecimals uint8, amount string) string {
 
 func GetCurrentStep(resourceID string, stepIndex uint8) string {
 	return resourceID[16*stepIndex:16*stepIndex+8] + "00000000000000000000000000000000000000000000000000000000"
+}
+
+func PvtKeyToAddress(pvtKey string) (string, error) {
+	privateKey, err := crypto.HexToECDSA(pvtKey)
+	if err != nil {
+		return "", err
+	}
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		return "", errors.New("error casting public key to ECDSA")
+	}
+	return crypto.PubkeyToAddress(*publicKeyECDSA).Hex(), nil
 }

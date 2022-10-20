@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
+	"github.com/LATOKEN/relayer-smart-contract.git/src/service/workers/utils"
 
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -34,13 +35,25 @@ func (v *viperConfig) ReadWorkersConfig() []*models.WorkerConfig {
 
 // readETHWorkerConfig reads ethereum chain worker params from config.json
 func (v *viperConfig) readWorkerConfig(name string) *models.WorkerConfig {
+	var pvtKey string
+	if v.isDevMode {
+		pvtKey = v.GetString(fmt.Sprintf("workers.%s.private_key", name))
+	} else {
+		pvtKey = v.ReadPvtKeyForChain(name)
+	}
+	workerAddr, err := utils.PvtKeyToAddress(pvtKey)
+	if err != nil {
+		panic(fmt.Sprintf("Got bad pvt key for %s.. Cant convert to address", name))
+	}
+	v.logger.Infof("Got key for chain %s, worker addres: %s", name, workerAddr)
+
 	return &models.WorkerConfig{
 		NetworkType:        v.GetString(fmt.Sprintf("workers.%s.type", name)),
 		ChainName:          strings.ToUpper(name),
 		User:               v.GetString(fmt.Sprintf("workers.%s.user", name)),
 		Password:           v.GetString(fmt.Sprintf("workers.%s.password", name)),
-		WorkerAddr:         common.HexToAddress(v.GetString(fmt.Sprintf("workers.%s.worker_addr", name))),
-		PrivateKey:         v.GetString(fmt.Sprintf("workers.%s.private_key", name)),
+		WorkerAddr:         common.HexToAddress(workerAddr),
+		PrivateKey:         pvtKey,
 		Provider:           v.GetString(fmt.Sprintf("workers.%s.provider", name)),
 		ContractAddr:       common.HexToAddress(v.GetString(fmt.Sprintf("workers.%s.contract_addr", name))),
 		NativeResourceID:   v.GetString(fmt.Sprintf("workers.%s.native_resource_id", name)),

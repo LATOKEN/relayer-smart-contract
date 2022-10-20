@@ -7,6 +7,8 @@ import (
 
 	"github.com/LATOKEN/relayer-smart-contract.git/src/models"
 
+	vault "github.com/hashicorp/vault/api"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -24,10 +26,19 @@ type Config interface {
 	GetFloat64(key string) float64
 	GetStringSlice(key string) []string
 	GetInterface(key string) interface{}
+	ReadVaultConfig()
+	SetLogger(logger *logrus.Logger)
 	Init()
 }
 
 type viperConfig struct {
+	isDevMode bool
+	logger    *logrus.Logger
+	vault     *vault.Client
+}
+
+func (v *viperConfig) SetLogger(logger *logrus.Logger) {
+	v.logger = logger
 }
 
 func (v *viperConfig) Init() {
@@ -43,9 +54,10 @@ func (v *viperConfig) Init() {
 		viper.SetConfigFile(`config.json.local`)
 	}
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("read config error: %s", err)
+		panic(fmt.Sprintf("read config error: %s", err))
 	}
 }
+
 func (v *viperConfig) GetString(key string) string {
 	return viper.GetString(key)
 }
@@ -74,9 +86,13 @@ func (v *viperConfig) GetInterface(key string) interface{} {
 	return viper.Get(key)
 }
 
+func (v *viperConfig) IsSet(key string) bool {
+	return viper.IsSet(key)
+}
+
 // NewViperConfig creates new viper for reading config.json
-func NewViperConfig() Config {
-	v := &viperConfig{}
+func NewViperConfig(isDev bool) Config {
+	v := &viperConfig{isDevMode: isDev}
 	v.Init()
 	return v
 }
