@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -17,12 +18,9 @@ import (
 )
 
 func main() {
-	cfg := config.NewViperConfig()
-	srvURL := cfg.ReadServiceConfig()
-	laCfg := cfg.ReadLachainConfig()
-	chainCfgs := cfg.ReadWorkersConfig()
-	dbConfig := cfg.ReadDBConfig()
-	dbURL := fmt.Sprintf(dbConfig.URL, dbConfig.DBHOST, dbConfig.DBPORT, dbConfig.DBUser, dbConfig.DBName, dbConfig.DBPassword, dbConfig.DBSSL)
+	isDevMode := flag.Bool("dev", false, "dev mode")
+	flag.Parse()
+	cfg := config.NewViperConfig(*isDevMode)
 	// init logrus logger
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.TextFormatter{
@@ -47,6 +45,15 @@ func main() {
 		}
 		logger.SetOutput(logFile)
 	}
+
+	cfg.SetLogger(logger)
+	cfg.ReadVaultConfig()
+
+	srvURL := cfg.ReadServiceConfig()
+	laCfg := cfg.ReadLachainConfig()
+	chainCfgs := cfg.ReadWorkersConfig()
+	dbConfig := cfg.ReadDBConfig()
+	dbURL := fmt.Sprintf(dbConfig.URL, dbConfig.DBHOST, dbConfig.DBPORT, dbConfig.DBUser, dbConfig.DBName, dbConfig.DBPassword, dbConfig.DBSSL)
 
 	// Set connection to onlife_business database
 	db, err := gorm.Open(dbConfig.DBDriver, dbURL)
