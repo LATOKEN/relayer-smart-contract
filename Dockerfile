@@ -18,6 +18,6 @@ RUN  apk --no-cache add ca-certificates
 COPY --from=builder /go/bin/src .
 EXPOSE 8000
 # # Run the src binary.
-CMD ["./src"]
+CMD ["./src", "-dev"]
 
 COPY create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/
