@@ -52,6 +52,7 @@ func (w *Erc20Worker) ParseLaDepositEvent(log *types.Log) (ContractEvent, error)
 	w.logger.Infof("[%s] recipient address: %s\n", SwapID, ev.RecipientAddress.Hex())
 	w.logger.Infof("[%s] token address: %s\n", SwapID, ev.TokenAddress.Hex())
 	w.logger.Infof("[%s] amount : %s\n", SwapID, ev.Amount.String())
+	w.logger.Infof("[%s] DataHASH : %s\n", SwapID, common.Bytes2Hex(ev.DataHash[:]))
 
 	return ev, nil
 }
@@ -76,6 +77,7 @@ func (w *Erc20Worker) ParseLaProposalEvent(log *types.Log) (ContractEvent, error
 	fmt.Printf("deposit nonce: %d\n", ev.DepositNonce)
 	fmt.Printf("status: %d\n", ev.Status)
 	fmt.Printf("resource ID: 0x%s\n", common.Bytes2Hex(ev.ResourceID[:]))
+	fmt.Printf("DataHash: 0x%s\n\n", common.Bytes2Hex(ev.DataHash[:]))
 
 	w.setTxMonitor(SwapID, ev.Status)
 	return ev, nil
